@@ -1,0 +1,11 @@
+# Config loading not yet implemented
+elasticsearch:
+  - name: default
+    hosts: ["127.0.0.1:9200"]
+    cloud_id: ""
+    cloud_auth: ""
+    api_key: ""
+    username: elastic
+    password: changeme
+    ssl_verify: True
+    default_index: ".alerts-security.alerts-default,apm-*-transaction*,logs-*"

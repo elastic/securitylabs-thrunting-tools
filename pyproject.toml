@@ -1,0 +1,42 @@
+[tool.poetry]
+name        = "elastic-securitylabs"
+version     = "8.5.0"
+description = "A collection of utilities to help with analysis on the command line."
+authors     = ["Derek Ditch <dcode@users.noreply.github.com>"]
+license     = "Apache-2.0"
+readme      = "README.md"
+packages    = [{ include = "elastic" }]
+
+[tool.poetry.scripts]
+eqlquery = 'elastic.securitylabs.eqlquery:run'
+
+[tool.poetry.dependencies]
+python         = "^3.11"
+typer          = { extras = ["all"], version = "^0.7.0" }
+scalpl         = "^0.4.2"
+pygments       = "^2.13.0"
+prompt-toolkit = "^3.0.32"
+elasticsearch  = "^8.5.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest        = "^7.2.0"
+pytest-isort  = "^3.1.0"
+pytest-black  = "^0.3.12"
+pytest-flake8 = "^1.1.1"
+black         = "^22.10.0"
+pre-commit    = "^2.20.0"
+
+[build-system]
+requires      = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths  = ["."]
+
+[tool.isort]
+profile = "black"
+
+[tool.pyright]
+include = ["elastic", "tests"]
+exclude = ["**/__pycache__"]
