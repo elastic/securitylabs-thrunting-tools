@@ -7,7 +7,7 @@ A collection of command line utilities for working on the command line. Current 
 
 ## Installation
 
-thrunting-tools repo requires Python 3.11 or greater. If you have that, you can install using
+thrunting-tools repo requires Python 3.10 or greater. If you have that, you can install using
 pip in the usual way:
 
 ```shell

@@ -22,7 +22,7 @@ eql-query    = 'elastic.thrunting_tools.eql_query:app'
 lucene-query = 'elastic.thrunting_tools.lucene_query:app'
 
 [tool.poetry.dependencies]
-python         = "^3.11"
+python         = "^3.10"
 typer          = { extras = ["all"], version = "^0.7.0" }
 scalpl         = "^0.4.2"
 pygments       = "^2.13.0"

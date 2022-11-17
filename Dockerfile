@@ -1,4 +1,4 @@
-FROM python:3.11.0-slim-bullseye as base
+FROM python:3.10.0-slim-bullseye as base
 
 USER root
 ENV PYTHONFAULTHANDLER=1 \
