@@ -35,7 +35,7 @@ from elastic.securitylabs.common.utils import choose_config
 logger = logging.getLogger(__name__)
 
 
-app = typer.Typer()
+app = typer.Typer(add_completion=False)
 dirs = AppDirs(appname="securitylabs-tools", appauthor="elastic")
 
 
@@ -56,7 +56,11 @@ DEFAULT_INDEX = os.environ.get(
 
 @app.command()
 def eql_query(
-    query: str,
+    query: str = typer.Argument(
+        ...,
+        help="Query specified using EQL (See https://ela.st/eql)",
+        show_default=False,
+    ),
     since: Optional[str] = typer.Option(
         "now-30d/d",
         "--since",

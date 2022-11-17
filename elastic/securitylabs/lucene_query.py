@@ -35,7 +35,7 @@ from elastic.securitylabs.common.utils import choose_config
 logger = logging.getLogger(__name__)
 
 
-app = typer.Typer()
+app = typer.Typer(add_completion=False)
 dirs = AppDirs(appname="securitylabs-tools", appauthor="elastic")
 
 
