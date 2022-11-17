@@ -77,7 +77,7 @@ $ lucene-query --since 'now-1M' 'dns.question.name: *.duckdns.org' -c \
 ...
 ```
 
-Find a list of all the unique agent IDs that resolved a known malware domain within the last 6 months.
+Find a list of all the unique agent IDs that resolved a known malware domain within the last 12 months.
 
 ```shell
 $ lucene-query --since 'now-12M' 'dns.question.name: puerto2547.duckdns.org' -c \
