@@ -14,7 +14,7 @@ TODO
 Each of the commands provide a usage when called with `--help`.
 
 ```shell
->_ eql-query --help
+$ eql-query --help
 
  Usage: eql-query [OPTIONS] QUERY
 
@@ -48,7 +48,7 @@ The tools default to looking for the YAML configuration file in the platform-spe
 Example: Run query using `devel` environment configuration
 
 ```shell
-eql-query -e devel 'malware where event.kind: "alert"'
+$ eql-query -e devel 'malware where event.kind: "alert"'
 ```
 
 ## Examples
@@ -56,14 +56,31 @@ eql-query -e devel 'malware where event.kind: "alert"'
 Using `jq` and `wc` to get the number of alert events where `EXCEL.EXE` was the parent process.
 
 ```shell
-eql-query 'any where event.kind: "alert"' -c | \
+$ eql-query 'any where event.kind: "alert"' -c | \
     jq 'select(._source.process.parent.name == "EXCEL.EXE")' -c | wc -l
 ```
 
 Find the unique event categories of all events in the last day that triggered based upon a rule using the 'sandbox' environment
 
 ```shell
->_ lucene-query --since 'now-1d' 'rule: *' -e sandbox -c | \
+$ lucene-query --since 'now-1d' 'rule: *' -e sandbox -c | \
     jq '._source.event.category[]' -c -r | sort -u
 network
+```
+
+Find the unique dynamic DNS subdomains of a particular domain resolved in our network in the last month
+
+```shell
+$ lucene-query --since 'now-1M' 'dns.question.name: *.duckdns.org' -c \
+    | jq '._source.dns.question.name' -r | sort -u
+
+...
+```
+
+Find a list of all the unique agent IDs that resolved a known malware domain within the last 6 months.
+
+```shell
+$ lucene-query --since 'now-12M' 'dns.question.name: puerto2547.duckdns.org' -c \
+    | jq '._source.agent.id' -r | sort -u
+ec82f608-3d1b-4651-900e-b970c68bbeef
 ```

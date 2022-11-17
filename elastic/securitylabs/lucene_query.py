@@ -104,7 +104,18 @@ def lucene_query(
     _filter = {"range": {"@timestamp": {"gte": since, "lt": before}}}
 
     _query = {
-        "bool": {"must": [{"query_string": {"query": query}}], "filter": [_filter]}
+        "bool": {
+            "must": [
+                {
+                    "query_string": {
+                        "query": query,
+                        "analyze_wildcard": True,
+                        "allow_leading_wildcard": True,
+                    }
+                }
+            ],
+            "filter": [_filter],
+        }
     }
 
     field_view: List[str] = None
