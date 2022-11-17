@@ -1,4 +1,4 @@
-FROM python:3.10.0-slim-bullseye as base
+FROM python:3.11.0-slim-bullseye as base
 
 USER root
 ENV PYTHONFAULTHANDLER=1 \
@@ -9,8 +9,7 @@ ENV PYTHONFAULTHANDLER=1 \
     PIP_DEFAULT_TIMEOUT=100
 
 RUN apt-get update && \
-    apt-get install -y gcc gnupg make curl librdkafka-dev && \
-    pip install --upgrade pip && \
+    apt-get install -y curl && \
     curl -sSL https://install.python-poetry.org | python3 -
 
 ENV PATH="/root/.local/bin/:$PATH" \
