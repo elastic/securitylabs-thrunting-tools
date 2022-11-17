@@ -79,7 +79,6 @@ last month
 ```shell
 lucene-query --since 'now-1M' 'dns.question.name: *.duckdns.org' -c \
     | jq '._source.dns.question.name' -r | sort -u
-
 ...
 ```
 
