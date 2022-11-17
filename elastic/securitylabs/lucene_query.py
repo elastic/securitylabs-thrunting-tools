@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CLI utility for querying Elasticsearch using EQL syntax"""
+"""CLI utility for querying Elasticsearch using Lucene syntax"""
 # Licensed to Elasticsearch B.V. under one or more contributor
 # license agreements. See the NOTICE file distributed with
 # this work for additional information regarding copyright
@@ -19,7 +19,6 @@
 
 import json
 import logging
-import os
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -30,7 +29,8 @@ from rich import print_json
 from scalpl import Cut
 
 from elastic.securitylabs.common.elastic import connect_elasticsearch
-from elastic.securitylabs.common.utils import choose_config
+from elastic.securitylabs.common.settings import ElasticsearchSettings
+from elastic.securitylabs.common.utils import choose_config_entry
 
 logger = logging.getLogger(__name__)
 
@@ -38,18 +38,7 @@ logger = logging.getLogger(__name__)
 app = typer.Typer(add_completion=False)
 dirs = AppDirs(appname="securitylabs-tools", appauthor="elastic")
 
-
-DEFAULT_CFG: Dict[str, Optional[str | bool]] = {
-    "hosts": os.environ.get("ES_HOSTS", None),
-    "cloud_id": os.environ.get("CLOUD_ID", None),
-    "cloud_auth": os.environ.get("CLOUD_AUTH", None),
-    "api_key": os.environ.get("ES_APIKEY", None),
-    "username": os.environ.get("ES_USER", None),
-    "password": os.environ.get("ES_PASS", None),
-    "ssl_verify": os.environ.get("ES_SSL_VERIFY", True),
-}
-
-DEFAULT_INDEX = os.environ.get("ES_INDEX", "logs-*,metrics-*")
+DEFAULT_INDEX = "logs-*,metrics-*"
 
 
 @app.command()
@@ -60,7 +49,11 @@ def lucene_query(
         show_default=False,
     ),
     index: str = typer.Option(
-        DEFAULT_INDEX, "--index", "-i", help="Index pattern to search"
+        None,
+        "--index",
+        "-i",
+        help=f"Index pattern to search. Defaults to '{DEFAULT_INDEX}'",
+        show_default=False,
     ),
     since: Optional[str] = typer.Option(
         "now-30d/d",
@@ -94,15 +87,18 @@ def lucene_query(
 ):
     # pylint: disable=missing-function-docstring
 
-    _cfg: Dict[str, Any] = DEFAULT_CFG
-    _local: Dict[str, Any] = choose_config(config, "elasticsearch", environment)
+    _cfg_dict: Dict[str, Any] = {"default_index": DEFAULT_INDEX}
+    _local: Dict[str, Any] = choose_config_entry(config, "elasticsearch", environment)
     if _local:
-        _cfg = _local
+        _cfg_dict |= _local
+
+    _cfg = ElasticsearchSettings(**_cfg_dict)
+    if index is None:
+        index = _cfg.default_index
 
     logger.info("Creating es client")
     esclient = connect_elasticsearch(_cfg)
     _filter = {"range": {"@timestamp": {"gte": since, "lt": before}}}
-
     _query = {
         "bool": {
             "must": [

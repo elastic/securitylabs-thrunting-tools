@@ -19,7 +19,6 @@
 
 import json
 import logging
-import os
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -30,7 +29,8 @@ from rich import print_json
 from scalpl import Cut
 
 from elastic.securitylabs.common.elastic import connect_elasticsearch
-from elastic.securitylabs.common.utils import choose_config
+from elastic.securitylabs.common.settings import ElasticsearchSettings
+from elastic.securitylabs.common.utils import choose_config_entry
 
 logger = logging.getLogger(__name__)
 
@@ -38,20 +38,7 @@ logger = logging.getLogger(__name__)
 app = typer.Typer(add_completion=False)
 dirs = AppDirs(appname="securitylabs-tools", appauthor="elastic")
 
-
-DEFAULT_CFG: Dict[str, Optional[str | bool]] = {
-    "hosts": os.environ.get("ES_HOSTS", None),
-    "cloud_id": os.environ.get("CLOUD_ID", None),
-    "cloud_auth": os.environ.get("CLOUD_AUTH", None),
-    "api_key": os.environ.get("ES_APIKEY", None),
-    "username": os.environ.get("ES_USER", None),
-    "password": os.environ.get("ES_PASS", None),
-    "ssl_verify": os.environ.get("ES_SSL_VERIFY", True),
-}
-
-DEFAULT_INDEX = os.environ.get(
-    "ES_INDEX", ".alerts-security.alerts-default,apm-*-transaction*,logs-*"
-)
+DEFAULT_INDEX = ".alerts-security.alerts-default,apm-*-transaction*,logs-*"
 
 
 @app.command()
@@ -59,6 +46,13 @@ def eql_query(
     query: str = typer.Argument(
         ...,
         help="Query specified using EQL (See https://ela.st/eql)",
+        show_default=False,
+    ),
+    index: str = typer.Option(
+        None,
+        "--index",
+        "-i",
+        help=f"Index pattern to search. Defaults to '{DEFAULT_INDEX}'",
         show_default=False,
     ),
     since: Optional[str] = typer.Option(
@@ -93,10 +87,14 @@ def eql_query(
 ) -> None:
     # pylint: disable=missing-function-docstring
 
-    _cfg: Dict[str, Any] = DEFAULT_CFG
-    _local: Dict[str, Any] = choose_config(config, "elasticsearch", environment)
+    _cfg_dict: Dict[str, Any] = {"default_index": DEFAULT_INDEX}
+    _local: Dict[str, Any] = choose_config_entry(config, "elasticsearch", environment)
     if _local:
-        _cfg = _local
+        _cfg_dict |= _local
+
+    _cfg = ElasticsearchSettings(**_cfg_dict)
+    if index is None:
+        index = _cfg.default_index
 
     logger.info("Creating es client")
     esclient = connect_elasticsearch(_cfg)
@@ -108,7 +106,7 @@ def eql_query(
 
     _results = Cut(
         esclient.eql.search(
-            index=DEFAULT_INDEX,
+            index=index,
             query=query,
             filter=_filter,
             fields=field_view,

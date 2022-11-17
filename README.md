@@ -18,25 +18,23 @@ $ eql-query --help
 
  Usage: eql-query [OPTIONS] QUERY
 
-╭─ Arguments ───────────────────────────────────────────────────────────────────────────╮
-│ *    query      TEXT  Query specified using EQL (See https://ela.st/eql) [required]   │
-╰───────────────────────────────────────────────────────────────────────────────────────╯
-╭─ Options ─────────────────────────────────────────────────────────────────────────────╮
-│ --since        -s      TEXT     Earliest time filter using datemath or datetime       │
-│                                 [default: now-30d/d]                                  │
-│ --before       -b      TEXT     Latest time filter using datemath or datetime         │
-│                                 [default: now]                                        │
-│ --compact      -c               Output one event/sequence per line                    │
-│ --fields       -f      TEXT     Comma separated list of fields to display             │
-│                                 [default: None]                                       │
-│ --size         -s      INTEGER  Specify maximum size of result set [default: 100]     │
-│ --config               PATH     Optional path to YAML configuration with settings for │
-│                                 Elasticsearch                                         │
-│                                 [default: $HOME/.config/securitylabs-tools/config.yml]│
-│ --environment  -e      TEXT     Environment name to use from config file (if present) │
-│                                 [default: default]                                    │
-│ --help                          Show this message and exit.                           │
-╰───────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Arguments ──────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ *    query      TEXT  Query specified using EQL (See https://ela.st/eql) [required]                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ --index        -i      TEXT     Index pattern to search. Defaults to                                                 │
+│                                 '.alerts-security.alerts-default,apm-*-transaction*,logs-*'                          │
+│ --since        -s      TEXT     Earliest time filter using datemath or datetime [default: now-30d/d]                 │
+│ --before       -b      TEXT     Latest time filter using datemath or datetime [default: now]                         │
+│ --compact      -c               Output one event/sequence per line                                                   │
+│ --fields       -f      TEXT     Comma separated list of fields to display [default: None]                            │
+│ --size         -s      INTEGER  Specify maximum size of result set [default: 100]                                    │
+│ --config               PATH     Optional path to YAML configuration with settings for Elasticsearch                  │
+│                                 [default: /home/user/.config/securitylabs-tools/config.yml]                          │
+│ --environment  -e      TEXT     Environment name to use from config file (if present) [default: default]             │
+│ --help                          Show this message and exit.                                                          │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
 ```
 
 ## Configuration
@@ -49,13 +47,22 @@ top-level keys (e.g. `elasticsearch`), which contain a list of environments. All
 check for the first environment with the name attribute set to `default`  if none is specified
 on the command line.
 
-Example: Run query using `devel` environment configuration
+Example configuration file:
+
+```yaml
+elasticsearch:
+  - name: default
+    cloud_id: "security-cluster:dXMtd2VzdDEuZ2NwLmNsb3VkLmVzLmlvJGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6MDEyMzQ1JGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6MDEyMzQ1"
+    cloud_auth: "elastic:changeme"
+```
+
+## Examples
+
+Run query using `devel` environment configuration
 
 ```shell
 eql-query -e devel 'malware where event.kind: "alert"'
 ```
-
-## Examples
 
 Using `jq` and `wc` to get the number of alert events where `EXCEL.EXE` was the parent process.
 

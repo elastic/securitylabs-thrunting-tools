@@ -30,6 +30,7 @@ prompt-toolkit = "^3.0.32"
 elasticsearch  = "^8.5.0"
 appdirs        = "^1.4.4"
 ruamel-yaml    = "^0.17.21"
+pydantic       = { extras = ["dotenv"], version = "^1.10.2" }
 
 [tool.poetry.group.dev.dependencies]
 pytest     = "^7.2.0"
@@ -37,6 +38,8 @@ pre-commit = "^2.20.0"
 black      = "^22.10.0"
 flake8     = "^5.0.4"
 isort      = "^5.10.1"
+pylint     = "^2.15.5"
+devtools = {extras = ["pygments"], version = "^0.9.0"}
 
 [build-system]
 requires      = ["poetry-core"]

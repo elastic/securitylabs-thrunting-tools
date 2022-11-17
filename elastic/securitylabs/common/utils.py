@@ -26,9 +26,7 @@ from ruamel.yaml import YAML
 logger = getLogger(__name__)
 
 
-def choose_config(
-    config: Path, group: str, name: str = "default"
-) -> Dict[str, Any] | None:
+def choose_config_entry(config: Path, group: str, name: str = None) -> Dict[str, Any]:
     """
     filters entries in a YAML configuration file for a given group (top-level key)
     and a given name
@@ -39,21 +37,20 @@ def choose_config(
         yaml = YAML()
         _config: List[Dict[str, Any]] = yaml.load(config.read_text())
 
-    _config = list(
-        filter(lambda entry: entry.get("name", None) == name, _config.get(group, []))
-    )
-
-    if len(_config) == 0:
-        logger.error(
-            "Failed to find environment configuration for group '%s' for name '%s' in file '%s'",
-            group,
-            name,
-            config,
+        _config = list(
+            filter(lambda entry: entry.get("name") == name, _config.get(group, []))
         )
-        raise typer.Exit(code=-1)
+        if len(_config) == 0:
+            logger.error(
+                "Failed to find environment for group '%s' for name '%s' in file '%s'",
+                group,
+                name,
+                config,
+            )
+            raise typer.Exit(code=-1)
 
     if len(_config) > 0:
         # If we have at least one match, return the first
         return _config[0]
     else:
-        return None
+        return {}

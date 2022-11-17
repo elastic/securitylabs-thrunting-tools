@@ -16,62 +16,38 @@
 # specific language governing permissions and limitations
 # under the License.
 import logging
-import os
-from typing import Dict, List, Optional, Tuple
+from typing import Tuple
 
 from elasticsearch import Elasticsearch
+
+from elastic.securitylabs.common.settings import ElasticsearchSettings
 
 logger = logging.getLogger(__name__)
 
 
-DEFAULT_CFG: Dict[str, Optional[str | bool]] = {
-    "hosts": os.environ.get("ES_HOSTS", None),
-    "cloud_id": os.environ.get("CLOUD_ID", None),
-    "cloud_auth": os.environ.get("CLOUD_AUTH", None),
-    "api_key": os.environ.get("ES_APIKEY", None),
-    "username": os.environ.get("ES_USER", None),
-    "password": os.environ.get("ES_PASS", None),
-    "ssl_verify": os.environ.get("ES_SSL_VERIFY", True),
-}
-
-
-# pylint: disable=dangerous-default-value
-def connect_elasticsearch(
-    es_config: dict[str, Optional[str | bool]] = DEFAULT_CFG
-) -> Elasticsearch:
-    """Boilerplate to handle connecting to Elasticsearch given a configuration dict"""
+def connect_elasticsearch(settings: ElasticsearchSettings) -> Elasticsearch:
+    """Boilerplate to handle connecting to Elasticsearch"""
     _es: Elasticsearch
     _apikey: Tuple[str, str] | None = None
     _httpauth: Tuple[str, str] | None = None
 
-    if es_config.get("cloud_auth", None) is not None:
-        _httpauth = tuple(es_config.get("cloud_auth").split(":"))  # type: ignore
-    elif es_config.get("username", None) and es_config.get("password", None):
+    if settings.cloud_auth is not None:
+        _httpauth = tuple(settings.cloud_auth.split(":"))
+    elif settings.username and settings.password:
         _httpauth = (
-            es_config.get("username"),  # type: ignore
-            es_config.get("password"),
+            settings.username,
+            settings.password,
         )
 
-    if es_config.get("api_key", None):
-        _apikey = tuple(es_config.get("api_key").split(":"))  # type: ignore
+    if settings.api_key:
+        _apikey = tuple(settings.get("api_key").split(":"))
 
-    if _httpauth is not None and _apikey is not None:
-        logger.critical(
-            "Either username/password or api_key should be used for elasticsearch, not both."
-        )
-        raise ValueError
-
-    _ssl_verify: bool = bool(es_config.get("ssl_verify", True))
-
-    if es_config.get("cloud_id", None):
-        logger.debug(
-            "Connecting to Elasticsearch using cloud_id %s", es_config.get("cloud_id")
-        )
-        _cloud_id: str = str(es_config.get("cloud_id"))
+    if settings.cloud_id:
+        logger.debug("Connecting to Elasticsearch using cloud_id %s", settings.cloud_id)
 
         _es = Elasticsearch(
-            cloud_id=_cloud_id,
-            verify_certs=_ssl_verify,
+            cloud_id=settings.cloud_id,
+            verify_certs=settings.ssl_verify,
             http_auth=_httpauth,
             api_key=_apikey,
             request_timeout=30,
@@ -79,18 +55,11 @@ def connect_elasticsearch(
             retry_on_timeout=True,
         )
     else:
-        logger.debug(
-            "Connecting to Elasticsearch using hosts: %s",
-            es_config.get("hosts", ["127.0.0.1:9200"]),
-        )
-
-        _hosts: str | List[str] = es_config.get("hosts", ["127.0.0.1:9200"])  # type: ignore
-        if isinstance(_hosts, str):
-            _hosts = _hosts.split(",")
+        logger.debug("Connecting to Elasticsearch using hosts: %s", settings.hosts)
 
         _es = Elasticsearch(
-            hosts=_hosts,  # type: ignore
-            verify_certs=_ssl_verify,
+            hosts=settings.hosts,
+            verify_certs=settings.ssl_verify,
             http_auth=_httpauth,
             api_key=_apikey,
             request_timeout=30,
@@ -108,4 +77,4 @@ def connect_elasticsearch(
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
-    connect_elasticsearch()
+    connect_elasticsearch(ElasticsearchSettings())
