@@ -21,18 +21,23 @@ import json
 import logging
 import os
 import sys
-from typing import Dict, List, Optional
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 import typer
+from appdirs import AppDirs
 from rich import print_json
 from scalpl import Cut
 
 from elastic.securitylabs.common.elastic import connect_elasticsearch
+from elastic.securitylabs.common.utils import choose_config
 
 logger = logging.getLogger(__name__)
 
 
 app = typer.Typer()
+dirs = AppDirs(appname="securitylabs-tools", appauthor="elastic")
+
 
 DEFAULT_CFG: Dict[str, Optional[str | bool]] = {
     "hosts": os.environ.get("ES_HOSTS", None),
@@ -44,14 +49,19 @@ DEFAULT_CFG: Dict[str, Optional[str | bool]] = {
     "ssl_verify": os.environ.get("ES_SSL_VERIFY", True),
 }
 
-DEFAULT_INDEX = os.environ.get(
-    "ES_INDEX", ".alerts-security.alerts-default,apm-*-transaction*,logs-*"
-)
+DEFAULT_INDEX = os.environ.get("ES_INDEX", "logs-*,metrics-*")
 
 
 @app.command()
-def eqlquery(
-    query: str,
+def lucene_query(
+    query: str = typer.Argument(
+        ...,
+        help="Query specified using Lucene (See https://ela.st/lucene)",
+        show_default=False,
+    ),
+    index: str = typer.Option(
+        DEFAULT_INDEX, "--index", "-i", help="Index pattern to search"
+    ),
     since: Optional[str] = typer.Option(
         "now-30d/d",
         "--since",
@@ -62,7 +72,7 @@ def eqlquery(
         "now", "-b", "--before", help="Latest time filter using datemath or datetime"
     ),
     compact: Optional[bool] = typer.Option(
-        False, "-c", "--compact", help="Output one event/sequence per line"
+        False, "-c", "--compact", help="Output one event per line"
     ),
     fields: Optional[str] = typer.Option(
         None, "-f", "--fields", help="Comma separated list of fields to display"
@@ -70,40 +80,52 @@ def eqlquery(
     size: Optional[int] = typer.Option(
         100, "-s", "--size", help="Specify maximum size of result set"
     ),
+    config: Optional[Path] = typer.Option(
+        f"{dirs.user_config_dir}/config.yml",
+        "--config",
+        help="Optional path to YAML configuration with settings for Elasticsearch",
+    ),
+    environment: Optional[str] = typer.Option(
+        "default",
+        "--environment",
+        "-e",
+        help="Environment name to use from config file (if present)",
+    ),
 ):
-    """eqlquery command main body
+    # pylint: disable=missing-function-docstring
 
-    Args:
-        query (str): Query specified using EQL (See https://ela.st/eql)
-        since (Optional[str], optional): Start of event timestamp. Defaults to "now-30d/d"
-        before (Optional[str], optional): End of event timestamp. Defaults to "now"
-        compact (Optional[bool], optional): If True, generate one event per line. Defaults to False
-        fields (Optional[str], optional): Specify list of fields to retrieve. Defaults to all fields
-        size (Optional[int], optional): Maximum event count. Defaults to 100
-    """
+    _cfg: Dict[str, Any] = DEFAULT_CFG
+    _local: Dict[str, Any] = choose_config(config, "elasticsearch", environment)
+    if _local:
+        _cfg = _local
+
     logger.info("Creating es client")
-    esclient = connect_elasticsearch(DEFAULT_CFG)
+    esclient = connect_elasticsearch(_cfg)
     _filter = {"range": {"@timestamp": {"gte": since, "lt": before}}}
 
+    _query = {
+        "bool": {"must": [{"query_string": {"query": query}}], "filter": [_filter]}
+    }
+
+    field_view: List[str] = None
+    if fields is not None:
+        field_view = fields.split(",")
+
     _results = Cut(
-        esclient.eql.search(index=DEFAULT_INDEX, query=query, filter=_filter, size=size)
+        esclient.search(index=index, query=_query, fields=field_view, size=size)
     )
 
     logger.info("Found %s results", _results["hits.total.value"])
-
-    field_view: List[str] = []
-    if fields is not None:
-        field_view = fields.split(",")
 
     indent: Optional[int] = None
     if not compact:
         indent = 4
 
-    for item in _results["hits.events"]:
+    for item in _results["hits.hits"]:
         _view: Cut = Cut({})
         item = Cut(item)
 
-        if len(field_view) > 0:
+        if field_view is not None and len(field_view) > 0:
             for _field in field_view:
                 if item.get(f"_source.{_field}", None) is not None:
                     _view.setdefault(_field, item[f"_source.{_field}"])
@@ -114,11 +136,6 @@ def eqlquery(
         print_json(_json, indent=indent, sort_keys=True)
 
 
-def run():
-    """Entrypoint for typer app used by installed script"""
-    app()
-
-
 if __name__ == "__main__":
     logging.basicConfig(stream=sys.stderr, format="%(message)s", level=logging.DEBUG)
-    run()
+    app()
