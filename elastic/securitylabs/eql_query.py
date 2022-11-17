@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 
 
 app = typer.Typer(add_completion=False)
-dirs = AppDirs(appname="securitylabs-tools", appauthor="elastic")
+dirs = AppDirs(appname="thrunting-tools", appauthor="elastic")
 
 DEFAULT_INDEX = ".alerts-security.alerts-default,apm-*-transaction*,logs-*"
 

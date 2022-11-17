@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "elastic-securitylabs"
+name = "securitylabs-thrunting-tools"
 version = "8.5.0"
-description = "A collection of utilities to help with analysis on the command line."
+description = "A collection of utilities to help with threat hunting on the command line."
 authors = ["Derek Ditch <dcode@users.noreply.github.com>"]
 license = "Apache-2.0"
 readme = "README.md"
@@ -39,7 +39,7 @@ black      = "^22.10.0"
 flake8     = "^5.0.4"
 isort      = "^5.10.1"
 pylint     = "^2.15.5"
-devtools = {extras = ["pygments"], version = "^0.9.0"}
+devtools   = { extras = ["pygments"], version = "^0.9.0" }
 
 [build-system]
 requires      = ["poetry-core"]

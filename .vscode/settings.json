@@ -10,6 +10,7 @@
         "lucene",
         "pydantic",
         "securitylabs",
+        "thrunting",
         "userpass"
     ]
 }
