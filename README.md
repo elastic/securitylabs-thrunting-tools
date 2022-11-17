@@ -14,8 +14,11 @@ pip in the usual way:
 pip3 install thrunting-tools
 ```
 
-You can now
+You can now check that each command was installed.
 
+```shell
+eql-query --version
+```
 
 ## Usage
 

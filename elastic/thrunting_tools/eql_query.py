@@ -76,6 +76,8 @@ def eql_query(
     config: Optional[Path] = typer.Option(
         f"{dirs.user_config_dir}/config.yml",
         "--config",
+        envvar="CONFIG_PATH",
+        show_envvar=False,
         help="Optional path to YAML configuration with settings for Elasticsearch",
     ),
     environment: Optional[str] = typer.Option(
