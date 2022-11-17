@@ -16,6 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from importlib.metadata import version
 from logging import getLogger
 from pathlib import Path
 from typing import Any, Dict, List
@@ -54,3 +55,11 @@ def choose_config_entry(config: Path, group: str, name: str = None) -> Dict[str,
         return _config[0]
     else:
         return {}
+
+
+def version_callback(value: bool):
+    if value:
+        _version = version("thrunting-tools")
+        print(f"Elastic Security Labs Thrunting Tools, {_version}")
+        print("https://github.com/elastic/securitylabs-thruntingtools")
+        raise typer.Exit()

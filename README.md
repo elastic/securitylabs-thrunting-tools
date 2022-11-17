@@ -1,13 +1,21 @@
-# securitylabs-thrunting-tools
+# Elastic Security Labs thruntingtools
 
-A collection of command line utilities for working on the command line.
+A collection of command line utilities for working on the command line. Current list:
 
 - `eql-query`
 - `lucene-query`
 
 ## Installation
 
-TODO
+thrunting-tools repo requires Python 3.11 or greater. If you have that, you can install using
+pip in the usual way:
+
+```shell
+pip3 install thrunting-tools
+```
+
+You can now
+
 
 ## Usage
 

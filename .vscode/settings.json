@@ -11,6 +11,7 @@
         "pydantic",
         "securitylabs",
         "thrunting",
+        "thruntingtools",
         "userpass"
     ]
 }

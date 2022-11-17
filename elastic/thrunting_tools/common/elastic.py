@@ -20,7 +20,7 @@ from typing import Tuple
 
 from elasticsearch import Elasticsearch
 
-from elastic.securitylabs.common.settings import ElasticsearchSettings
+from elastic.thrunting_tools.common.settings import ElasticsearchSettings
 
 logger = logging.getLogger(__name__)
 

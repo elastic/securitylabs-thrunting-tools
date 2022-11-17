@@ -1,11 +1,22 @@
-# Config loading not yet implemented
+## Top-level configuration settings group
 elasticsearch:
+  ## List of settings dictionaries, allowing multiple environments
   - name: default
-    hosts: ["127.0.0.1:9200"]
+    hosts: ## hosts entries require the HTTP protocol scheme (http or https)
+      - "http://127.0.0.1:9200"
+      - "http://127.0.0.2:9200"
+    ## Optionally use cloud_id and cloud_auth to simplify configuration
     #cloud_id: ""
     #cloud_auth: ""
+    ## api_key allows more fine-grained access control for your applications
     #api_key: ""
     username: elastic
     password: changeme
     ssl_verify: True
     default_index: ".alerts-security.alerts-default,apm-*-transaction*,logs-*"
+
+  - name: test
+    hosts: ["http://192.168.0.100:9200"]
+    username: "elastic"
+    password: "changeme"
+    default_index: "logs-*,metrics-*"

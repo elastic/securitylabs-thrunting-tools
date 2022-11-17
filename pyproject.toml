@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "securitylabs-thrunting-tools"
+name = "thrunting-tools"
 version = "8.5.0"
 description = "A collection of utilities to help with threat hunting on the command line."
 authors = ["Derek Ditch <dcode@users.noreply.github.com>"]
@@ -18,8 +18,8 @@ classifiers = [
 ]
 
 [tool.poetry.scripts]
-eql-query    = 'elastic.securitylabs.eql_query:app'
-lucene-query = 'elastic.securitylabs.lucene_query:app'
+eql-query    = 'elastic.thrunting_tools.eql_query:app'
+lucene-query = 'elastic.thrunting_tools.lucene_query:app'
 
 [tool.poetry.dependencies]
 python         = "^3.11"

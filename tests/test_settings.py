@@ -20,7 +20,7 @@ from unittest import mock
 
 from devtools import debug
 
-from elastic.securitylabs.common.settings import ElasticsearchSettings
+from elastic.thrunting_tools.common.settings import ElasticsearchSettings
 
 
 @mock.patch.dict(os.environ, {}, clear=True)
