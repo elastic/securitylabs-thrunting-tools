@@ -23,8 +23,8 @@ FROM base AS builder
 USER root
 
 WORKDIR /runtime
-COPY poetry.lock pyproject.toml ./
-RUN poetry install --no-root --only main
+COPY pyproject.toml ./
+RUN poetry lock && poetry install --no-root --only main
 COPY . .
 
 FROM base as runtime
