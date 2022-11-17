@@ -20,4 +20,4 @@ from importlib.metadata import version
 
 def test_version():
     """Most basic of tests. Requires manual bump for each release"""
-    assert version("thrunting-tools") == "8.5.0"
+    assert version("thrunting-tools") == "8.5.1"

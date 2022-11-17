@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "thrunting-tools"
-version = "8.5.0"
+version = "8.5.1"
 description = "A collection of utilities to help with threat hunting on the command line."
 authors = ["Derek Ditch <dcode@users.noreply.github.com>"]
 license = "Apache-2.0"
@@ -16,6 +16,11 @@ classifiers = [
     "Topic :: Security",
     "Typing :: Typed",
 ]
+keywords = ["elasticsearch", "eql", "lucene", "command line"]
+repository = "https://github.com/elastic/securitylabs-thruntingtools"
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/elastic/securitylabs-thruntingtools/issues"
 
 [tool.poetry.scripts]
 eql-query    = 'elastic.thrunting_tools.eql_query:app'
@@ -30,7 +35,7 @@ prompt-toolkit = "^3.0.32"
 elasticsearch  = "^8.5.0"
 appdirs        = "^1.4.4"
 ruamel-yaml    = "^0.17.21"
-pydantic       = { extras = ["dotenv"], version = "^1.10.2" }
+pydantic       = { version = "^1.10.2" }
 
 [tool.poetry.group.dev.dependencies]
 pytest     = "^7.2.0"

@@ -7,17 +7,37 @@ A collection of command line utilities for working on the command line. Current 
 
 ## Installation
 
-thrunting-tools repo requires Python 3.10 or greater. If you have that, you can install using
-pip in the usual way:
+The easiest way to install thrunting-tools is with [pipx](https://pypa.github.io/pipx/). Once
+you have pipx installed, to install these tools on your path, simply install the latest release
+with:
+
+```shell
+pipx install thrunting-tools
+```
+
+Alternatively, if you'd like to install with pip and you have your own Python environment, you can
+do that too.
 
 ```shell
 pip3 install thrunting-tools
 ```
 
+
 You can now check that each command was installed.
 
 ```shell
 eql-query --version
+lucene-query --version
+```
+
+### Docker Usage
+
+Lastly, if you want to use a container runtime environment, you can use the latest release from
+the repository GitHub Container Repository.
+
+```shell
+docker pull ghcr.io/elastic/securitylabs-thrunting-tools:latest
+docker run -ti -v "${HOME}/.config/thrunting-tools/config.yml":/config.yml:ro,z --rm ghcr.io/elastic/securitylabs-thrunting-tools:latest eql-query --help
 ```
 
 ## Usage
@@ -45,7 +65,7 @@ $ eql-query --help
 │ --config               PATH     Optional path to YAML configuration with settings for       │
 │                                 Elasticsearch                                               │
 │                                 [default:                                                   │
-│                                 /home/user/.config/securitylabs-tools/config.yml]           │
+│                                 /home/user/.config/thrunting-tools/config.yml]           │
 │ --environment  -e      TEXT     Environment name to use from config file (if present)       │
 │                                 [default: default]                                          │
 │ --help                          Show this message and exit.                                 │
