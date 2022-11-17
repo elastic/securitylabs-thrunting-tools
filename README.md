@@ -34,7 +34,7 @@ $ eql-query --help
 │ --config               PATH     Optional path to YAML configuration with settings for       │
 │                                 Elasticsearch                                               │
 │                                 [default:                                                   │
-│                                 /home/dcode/.config/securitylabs-tools/config.yml]          │
+│                                 /home/user/.config/securitylabs-tools/config.yml]           │
 │ --environment  -e      TEXT     Environment name to use from config file (if present)       │
 │                                 [default: default]                                          │
 │ --help                          Show this message and exit.                                 │
