@@ -43,12 +43,16 @@ $ eql-query --help
 
 There are two ways to pass configuration to the tools: environment variables and configuration files.
 
-The tools default to looking for the YAML configuration file in the platform-specific configuration directory (see the `--help` output). If present, configuration groups are top-level keys (e.g. `elasticsearch`), which contain a list of environments. All scripts will check for the first environment with the name attribute set to `default`  if none is specified on the command line.
+The tools default to looking for the YAML configuration file in the platform-specific
+configuration directory (see the `--help` output). If present, configuration groups are
+top-level keys (e.g. `elasticsearch`), which contain a list of environments. All scripts will
+check for the first environment with the name attribute set to `default`  if none is specified
+on the command line.
 
 Example: Run query using `devel` environment configuration
 
 ```shell
-$ eql-query -e devel 'malware where event.kind: "alert"'
+eql-query -e devel 'malware where event.kind: "alert"'
 ```
 
 ## Examples
@@ -56,11 +60,12 @@ $ eql-query -e devel 'malware where event.kind: "alert"'
 Using `jq` and `wc` to get the number of alert events where `EXCEL.EXE` was the parent process.
 
 ```shell
-$ eql-query 'any where event.kind: "alert"' -c | \
+eql-query 'any where event.kind: "alert"' -c | \
     jq 'select(._source.process.parent.name == "EXCEL.EXE")' -c | wc -l
 ```
 
-Find the unique event categories of all events in the last day that triggered based upon a rule using the 'sandbox' environment
+Find the unique event categories of all events in the last day that triggered based upon a
+rule using the 'sandbox' environment
 
 ```shell
 $ lucene-query --since 'now-1d' 'rule: *' -e sandbox -c | \
@@ -68,10 +73,11 @@ $ lucene-query --since 'now-1d' 'rule: *' -e sandbox -c | \
 network
 ```
 
-Find the unique dynamic DNS subdomains of a particular domain resolved in our network in the last month
+Find the unique dynamic DNS subdomains of a particular domain resolved in our network in the
+last month
 
 ```shell
-$ lucene-query --since 'now-1M' 'dns.question.name: *.duckdns.org' -c \
+lucene-query --since 'now-1M' 'dns.question.name: *.duckdns.org' -c \
     | jq '._source.dns.question.name' -r | sort -u
 
 ...
