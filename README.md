@@ -1,9 +1,17 @@
-# Elastic Security Labs thruntingtools
+# Elastic Security Labs thrunting-tools
 
-A collection of command line utilities for working on the command line. Current list:
+Have you ever been threat hunting (hereafter known as "thrunting") in Kibana and thought
+"Gee! I wish I could take these results and do some automation on the command line!".
+Well look no further, fellow thrunter! This repo has just what you need to make your
+automation adventures a bit easier.
 
-- `eql-query`
-- `lucene-query`
+thrunting-tools is a collection of command line utilities for working with data.
+
+The current list of tools are:
+
+- `eql-query`, a tool to let you perform EQL searches from your shell!
+- `lucene-query`, a tool to let you perform Lucene searches against Elasticsearch in your
+  comfort zone, the command line.
 
 ## Installation
 
@@ -22,7 +30,6 @@ do that too.
 pip3 install thrunting-tools
 ```
 
-
 You can now check that each command was installed.
 
 ```shell
@@ -33,11 +40,19 @@ lucene-query --version
 ### Docker Usage
 
 Lastly, if you want to use a container runtime environment, you can use the latest release from
-the repository GitHub Container Repository.
+the repository GitHub Container Repository. Currently, we're publishing AMD64 and ARM64 images.
 
 ```shell
-docker pull ghcr.io/elastic/securitylabs-thrunting-tools:latest
-docker run -ti -v "${HOME}/.config/thrunting-tools/config.yml":/config.yml:ro,z --rm ghcr.io/elastic/securitylabs-thrunting-tools:latest eql-query --help
+docker pull ghcr.io/elastic/securitylabs-thrunting-tools:main
+```
+
+Then, you can run the container and pass your local configuration in to the default
+location used by the container, `/config.yml`. (NOTE: the `:z` part of the volume
+specification is only needed if you use SELinux)
+
+```shell
+docker run -ti -v "${HOME}/.config/thrunting-tools/config.yml":/config.yml:ro,z \
+    --rm ghcr.io/elastic/securitylabs-thrunting-tools:latest eql-query --help
 ```
 
 ## Usage
