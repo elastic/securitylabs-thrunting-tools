@@ -17,10 +17,10 @@ classifiers = [
     "Typing :: Typed",
 ]
 keywords = ["elasticsearch", "eql", "lucene", "command line"]
-repository = "https://github.com/elastic/securitylabs-thruntingtools"
+repository = "https://github.com/elastic/securitylabs-thrunting-tools"
 
 [tool.poetry.urls]
-"Bug Tracker" = "https://github.com/elastic/securitylabs-thruntingtools/issues"
+"Bug Tracker" = "https://github.com/elastic/securitylabs-thrunting-tools/issues"
 
 [tool.poetry.scripts]
 eql-query    = 'elastic.thrunting_tools.eql_query:app'
