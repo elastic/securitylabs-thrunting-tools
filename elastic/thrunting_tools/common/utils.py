@@ -61,5 +61,5 @@ def version_callback(value: bool):
     if value:
         _version = version("thrunting-tools")
         print(f"Elastic Security Labs Thrunting Tools, {_version}")
-        print("https://github.com/elastic/securitylabs-thruntingtools")
+        print("https://github.com/elastic/securitylabs-thrunting-tools")
         raise typer.Exit()

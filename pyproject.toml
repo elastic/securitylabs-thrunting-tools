@@ -23,8 +23,15 @@ repository = "https://github.com/elastic/securitylabs-thrunting-tools"
 "Bug Tracker" = "https://github.com/elastic/securitylabs-thrunting-tools/issues"
 
 [tool.poetry.scripts]
-eql-query    = 'elastic.thrunting_tools.eql_query:app'
-lucene-query = 'elastic.thrunting_tools.lucene_query:app'
+eql-query       = 'elastic.thrunting_tools.eql_query:app'
+lucene-query    = 'elastic.thrunting_tools.lucene_query:app'
+from-charcode   = 'elastic.thrunting_tools.format.from_charcode:app'
+to-charcode     = 'elastic.thrunting_tools.format.to_charcode:app'
+url-decode      = 'elastic.thrunting_tools.format.url_decode:app'
+url-encode      = 'elastic.thrunting_tools.format.url_encode:app'
+zlib-compress   = 'elastic.thrunting_tools.compression.zlib_deflate:app'
+zlib-decompress = 'elastic.thrunting_tools.compression.zlib_inflate:app'
+
 
 [tool.poetry.dependencies]
 python         = "^3.10"

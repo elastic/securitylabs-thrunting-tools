@@ -12,6 +12,12 @@ The current list of tools are:
 - `eql-query`, a tool to let you perform EQL searches from your shell!
 - `lucene-query`, a tool to let you perform Lucene searches against Elasticsearch in your
   comfort zone, the command line.
+- `from-charcode`, a tool to convert a character code in a given base to the ASCII character
+- `to-charcode`, a tool to convert an ASCII character to a given base
+- `url-decode`, a tool to decode urlencoded strings
+- `url-encode`, a tool to encode common character or all special characters to urlencoded strings
+- `zlib-compress`, a tool to perform zlib compression/deflation on the command line
+- `zlib-decompress`, a tool to perform zlib decompression/inflation on the command line
 
 ## Installation
 
