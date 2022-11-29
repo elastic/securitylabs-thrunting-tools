@@ -25,10 +25,13 @@ repository = "https://github.com/elastic/securitylabs-thrunting-tools"
 [tool.poetry.scripts]
 eql-query       = 'elastic.thrunting_tools.eql_query:app'
 lucene-query    = 'elastic.thrunting_tools.lucene_query:app'
+unmap-pe        = 'elastic.thrunting_tools.binaries.unmap_pe:app'
 from-charcode   = 'elastic.thrunting_tools.format.from_charcode:app'
 to-charcode     = 'elastic.thrunting_tools.format.to_charcode:app'
 url-decode      = 'elastic.thrunting_tools.format.url_decode:app'
 url-encode      = 'elastic.thrunting_tools.format.url_encode:app'
+zlib-inflate    = 'elastic.thrunting_tools.compression.zlib_inflate:app'
+zlib-deflate    = 'elastic.thrunting_tools.compression.zlib_deflate:app'
 zlib-compress   = 'elastic.thrunting_tools.compression.zlib_deflate:app'
 zlib-decompress = 'elastic.thrunting_tools.compression.zlib_inflate:app'
 
@@ -43,6 +46,7 @@ elasticsearch  = "^8.5.0"
 appdirs        = "^1.4.4"
 ruamel-yaml    = "^0.17.21"
 pydantic       = { version = "^1.10.2" }
+pefile         = "^2022.5.30"
 
 [tool.poetry.group.dev.dependencies]
 pytest     = "^7.2.0"

@@ -6,17 +6,17 @@ from typing import BinaryIO, Optional
 
 import typer
 
-from elastic.thrunting_tools.common.utils import version_callback
+from elastic.thrunting_tools.common.utils import stream, version_callback
 
 MAX_CHUNK_SIZE: int = 4096
 
 app = typer.Typer(add_completion=False)
 
 
-def chunk_generator(stream: BinaryIO) -> str:
+def chunk_generator(stream_in: BinaryIO) -> str:
     _deflator = zlib.compressobj()
     while True:  # Loop until EOF
-        _chunk = stream.read(MAX_CHUNK_SIZE)
+        _chunk = stream_in.read(MAX_CHUNK_SIZE)
         if not _chunk:
             yield _deflator.flush()
             break
@@ -50,12 +50,10 @@ def zlib_deflate(
     ),
 ):
 
-    f_in = sys.stdin.buffer if str(path_in) == "-" else path_in.open("rb")
-    f_out = sys.stdout.buffer if str(path_out) == "-" else path_out.open("wb")
-
-    gen = chunk_generator(f_in)
-    for chunk in gen:
-        f_out.write(chunk)
+    with stream(path_in, "rb") as f_in, stream(path_out, "wb") as f_out:
+        gen = chunk_generator(f_in)
+        for chunk in gen:
+            f_out.write(chunk)
 
 
 if __name__ == "__main__":

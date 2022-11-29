@@ -40,7 +40,7 @@ def connect_elasticsearch(settings: ElasticsearchSettings) -> Elasticsearch:
         )
 
     if settings.api_key:
-        _apikey = tuple(settings.get("api_key").split(":"))
+        _apikey = tuple(settings.api_key.split(":"))
 
     if settings.cloud_id:
         logger.debug("Connecting to Elasticsearch using cloud_id %s", settings.cloud_id)

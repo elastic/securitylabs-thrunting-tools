@@ -16,10 +16,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import sys
+from collections.abc import Generator
+from contextlib import contextmanager
 from importlib.metadata import version
 from logging import getLogger
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, BinaryIO, Dict, List, TextIO
 
 import typer
 from ruamel.yaml import YAML
@@ -63,3 +66,18 @@ def version_callback(value: bool):
         print(f"Elastic Security Labs Thrunting Tools, {_version}")
         print("https://github.com/elastic/securitylabs-thrunting-tools")
         raise typer.Exit()
+
+
+@contextmanager
+def stream(arg: Path, mode: str = "r") -> Generator[TextIO | BinaryIO, None, None]:
+    """Provides a context manager that handles stdin/stdout as well"""
+    if mode not in ("r", "w", "rb", "wb"):
+        raise ValueError('mode not "r", "w", "rb", "wb"')
+    if str(arg) == "-":
+        if mode in ("r", "w"):
+            yield sys.stdin if mode == "r" else sys.stdout
+        else:
+            yield sys.stdin.buffer if mode == "rb" else sys.stdout.buffer
+    else:
+        with arg.open(mode) as handle:
+            yield handle
