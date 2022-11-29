@@ -18,6 +18,9 @@ The current list of tools are:
 - `url-encode`, a tool to encode common character or all special characters to urlencoded strings
 - `zlib-compress`, a tool to perform zlib compression/deflation on the command line
 - `zlib-decompress`, a tool to perform zlib decompression/inflation on the command line
+- `zlib-deflate`, an alias for zlib-compress
+- `zlib-decompress`, an alias for zlib-decompress
+- `unmap-pe`, processes a PE binary, removing the memory mapping. Useful for analyzing process memory dumps
 
 ## Installation
 
@@ -151,4 +154,16 @@ Find a list of all the unique agent IDs that resolved a known malware domain wit
 $ lucene-query --since 'now-12M' 'dns.question.name: puerto2547.duckdns.org' -c \
     | jq '._source.agent.id' -r | sort -u
 ec82f608-3d1b-4651-900e-b970c68bbeef
+```
+
+Extract a single binary using Elastic Defend integration with
+[optional sample collection](https://www.elastic.co/security-labs/collecting-cobalt-strike-beacons-with-the-elastic-stack) enabled.
+Note that additional shell scripting would be needed to loop over a set of results.
+
+```shell
+eql-query 'process where ?process.Ext.memory_region.bytes_compressed_present == true' \
+    --size 1 \
+    --fields 'process.Ext.memory_region.bytes_compressed' | \
+    jq -r '.process.Ext.memory_region.bytes_compressed' | \
+    base64 -d | zlib-decompress > captured_sample.bin
 ```

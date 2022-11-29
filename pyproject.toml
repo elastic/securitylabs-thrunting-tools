@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "thrunting-tools"
-version = "8.5.1"
+version = "8.5.2"
 description = "A collection of utilities to help with threat hunting on the command line."
 authors = ["Derek Ditch <dcode@users.noreply.github.com>"]
 license = "Apache-2.0"
